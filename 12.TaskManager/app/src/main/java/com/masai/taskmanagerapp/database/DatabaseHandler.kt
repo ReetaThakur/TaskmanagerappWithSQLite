@@ -60,7 +60,7 @@ class DatabaseHandler(private val context: Context) :
         val query = "select * from $TABLE_NAME"
         //it will execute and return all the value which it had
         val cursor = db.rawQuery(query, null)
-        if (cursor != null) {
+        if (cursor != null && cursor.count > 0) {
             cursor.moveToFirst()
 
             do {
@@ -80,6 +80,28 @@ class DatabaseHandler(private val context: Context) :
 
         }
         return taskList
+    }
+    fun editTask(task: Task){
+        val db =writableDatabase
+        val contentValues=ContentValues()
+        contentValues.put(TITLE,task.title)
+        contentValues.put(DESC,task.desc)
+            //update tasks where id=task.id
+        val result=db.update(TABLE_NAME,contentValues,"id=${task.id}", null)
+        if (result==1){
+            Toast.makeText(context,"Task Updated",Toast.LENGTH_LONG).show()
+        }else{
+            Toast.makeText(context,"Failed to update",Toast.LENGTH_LONG).show()
+        }
+    }
+    fun deleteTask(task: Task){
+        val db=writableDatabase
+        val result=db.delete(TABLE_NAME,"id=${task.id}",null)
+        if (result==1){
+            Toast.makeText(context,"Task Deleted",Toast.LENGTH_LONG).show()
+        }else{
+            Toast.makeText(context,"Failed to delete",Toast.LENGTH_LONG).show()
+        }
     }
 
 
